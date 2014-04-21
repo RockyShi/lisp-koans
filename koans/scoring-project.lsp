@@ -49,9 +49,25 @@
 ;
 ; Your goal is to write the score method.
 
+(defun single-dice-score (pair)
+  (let ((score 0)
+	(num (car pair))
+	(cnt (cadr pair)))
+    (cond
+      ((= num 1) (incf score (* cnt 100)))
+      ((= num 5) (incf score (* cnt 50))))
+    (if (> cnt 2)
+	(cond
+	  ((= num 1) (incf score 700))
+	  ((= num 5) (incf score 350))
+	  (t (incf score (* num 100)))))
+    score))
+
 (defun score (dice)
-  ; You need to write this method
-)
+  (let ((scores 0)
+	(dice-count (loop for i from 1 to 6
+		       collect (list i (count i dice)))))
+      (reduce #'+ (mapcar #'single-dice-score dice-count))))
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
